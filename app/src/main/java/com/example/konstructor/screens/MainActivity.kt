@@ -4,6 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import android.widget.Button
 import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -33,6 +34,7 @@ class MainActivity : BaseActivity(), View.OnClickListener {
         setProgressBar(findViewById<ProgressBar>(R.id.progressBar))
 
         findViewById<SignInButton>(R.id.signInButton).setOnClickListener(this)
+        findViewById<Button>(R.id.signOutButton).setOnClickListener(this)
 
         val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
             .requestIdToken(getString(R.string.default_web_client_id))
@@ -97,6 +99,16 @@ class MainActivity : BaseActivity(), View.OnClickListener {
         startActivityForResult(signInIntent, RC_SIGN_IN)
     }
 
+    private fun signOut() {
+        // Firebase sign out
+        auth.signOut()
+
+        // Google sign out
+        googleSignInClient.signOut().addOnCompleteListener(this) {
+            updateUI(null)
+        }
+    }
+
     private fun updateUI(user: FirebaseUser?) {
         hideProgressBar()
 
@@ -106,18 +118,19 @@ class MainActivity : BaseActivity(), View.OnClickListener {
                 visibility = View.VISIBLE
             }
 
-            findViewById<SignInButton>(R.id.signInButton).apply {
-                visibility = View.GONE
-            }
+            findViewById<SignInButton>(R.id.signInButton).visibility = View.GONE
+            findViewById<Button>(R.id.signOutButton).visibility = View.VISIBLE
         } else {
             findViewById<TextView>(R.id.userName).visibility = View.GONE
             findViewById<SignInButton>(R.id.signInButton).visibility = View.VISIBLE
+            findViewById<Button>(R.id.signOutButton).visibility = View.GONE
         }
     }
 
     override fun onClick(v: View) {
         when (v.id) {
             R.id.signInButton -> signIn()
+            R.id.signOutButton -> signOut()
         }
     }
 

@@ -1,4 +1,5 @@
 <resources>
     <string name="app_name">KonstructorApp</string>
     <string name="hello">Hello, %s</string>
+    <string name="sign_out">Sign Out</string>
 </resources>
